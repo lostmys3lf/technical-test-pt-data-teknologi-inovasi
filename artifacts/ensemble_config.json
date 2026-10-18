@@ -1,0 +1,14 @@
+{
+  "features": [
+    "heart_rate",
+    "respiratory_rate",
+    "temperature",
+    "wbc_count",
+    "lactate_level",
+    "age",
+    "num_comorbidities"
+  ],
+  "w_a": 0.5,
+  "w_b": 0.5,
+  "threshold": 0.5
+}

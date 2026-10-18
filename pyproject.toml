@@ -1,0 +1,25 @@
+[project]
+name = "technical-test-pt-data-teknologi-inovasi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "lostmys3lf", email = "noviatriutami53@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.143.3",
+    "joblib>=1.6.0",
+    "numpy==2.1.3",
+    "onnxruntime==1.31.0",
+    "scikit-learn==1.6.1",
+    "uvicorn>=0.54.0",
+    "xgboost==3.4.1",
+]
+
+[project.scripts]
+technical-test-pt-data-teknologi-inovasi = "technical_test_pt_data_teknologi_inovasi:main"
+
+[build-system]
+requires = ["uv_build>=0.12.10,<0.13.0"]
+build-backend = "uv_build"

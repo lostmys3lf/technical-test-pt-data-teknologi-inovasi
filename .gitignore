@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+# Jupyter
+.ipynb_checkpoints/
+
+# file zip hasil download dari Colab
+artifacts.zip
+
+# file sistem
+Thumbs.db
+.DS_Store
