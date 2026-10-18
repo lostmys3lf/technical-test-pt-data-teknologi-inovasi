@@ -6,20 +6,27 @@ Model untuk memprediksi risiko sepsis pasien UGD dari 7 data vital dan hasil lab
 
 ```
 .
-├── studi_kasus_nuha_care.ipynb   # training, evaluasi k-fold, dan penyimpanan artefak
+├── studi_kasus_nuha_care.ipynb   # notebook utama: training, evaluasi k-fold, dan penyimpanan artefak
 ├── main.py                       # aplikasi FastAPI (endpoint /predict)
 ├── artifacts/
 │   ├── preprocessor.joblib       # Pipeline imputer + scaler
 │   ├── model_a_xgb.json          # Model A: XGBoost
 │   ├── model_b_ann.onnx          # Model B: ANN (Keras, diekspor ke ONNX)
 │   └── ensemble_config.json      # urutan fitur, bobot ensemble, threshold
-├── Dockerfile
-└── requirements.txt
+├── Dockerfile                    # image untuk menjalankan API
+├── requirements.txt              # dependency yang dipakai Dockerfile (versi dikunci)
+├── pyproject.toml                # dependency untuk menjalankan lokal dengan uv
+├── uv.lock                       # lockfile uv
+├── .python-version               # versi Python (3.13)
+├── Imbalanced_Classification_&_NN.ipynb  # template lab (dataset churn bank), bukan bagian solusi
+└── src/                          # sisa scaffolding `uv init`, tidak dipakai API
 ```
+
+Dataset `sepsis_emr_data.csv` tidak disertakan di repository. Notebook membacanya dari `/content/sepsis_emr_data.csv`.
 
 ## Pendekatan
 
-Notebook disusun mengikuti tahapan CRISP-DM.
+Notebook disusun mengikuti tahapan CRISP-DM. Notebook dijalankan di Google Colab (ada `!pip install`, `!zip`, dan `google.colab.files`). Untuk menjalankan ulang, unggah `sepsis_emr_data.csv` ke `/content/` lalu jalankan semua sel. Hasilnya berupa `artifacts.zip` yang isinya folder `artifacts/` di repository ini.
 
 ### 1. Data Preparation
 
@@ -88,6 +95,17 @@ Prasyarat: Docker Desktop sudah terpasang dan berjalan.
    ```
 
 4. API dapat diakses di `http://127.0.0.1:8000`. Dokumentasi interaktif (Swagger) tersedia di `http://127.0.0.1:8000/docs`.
+
+### Menjalankan tanpa Docker (opsional)
+
+Prasyarat: Python 3.13 dan [uv](https://docs.astral.sh/uv/).
+
+```bash
+uv sync
+uv run uvicorn main:app --port 8000
+```
+
+Docker memakai `requirements.txt`, sedangkan `uv` memakai `pyproject.toml` dan `uv.lock`. Versi library yang dikunci sama di keduanya.
 
 ## Contoh Request
 
