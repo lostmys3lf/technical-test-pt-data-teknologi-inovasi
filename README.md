@@ -6,20 +6,19 @@ Model untuk memprediksi risiko sepsis pasien UGD dari 7 data vital dan hasil lab
 
 ```
 .
-├── studi_kasus_nuha_care.ipynb   # notebook utama: training, evaluasi k-fold, dan penyimpanan artefak
-├── main.py                       # aplikasi FastAPI (endpoint /predict)
+├── studi_kasus_nuha_care.ipynb
+├── main.py
 ├── artifacts/
-│   ├── preprocessor.joblib       # Pipeline imputer + scaler
-│   ├── model_a_xgb.json          # Model A: XGBoost
-│   ├── model_b_ann.onnx          # Model B: ANN (Keras, diekspor ke ONNX)
-│   └── ensemble_config.json      # urutan fitur, bobot ensemble, threshold
-├── Dockerfile                    # image untuk menjalankan API
-├── requirements.txt              # dependency yang dipakai Dockerfile (versi dikunci)
-├── pyproject.toml                # dependency untuk menjalankan lokal dengan uv
-├── uv.lock                       # lockfile uv
-├── .python-version               # versi Python (3.13)
-├── Imbalanced_Classification_&_NN.ipynb  # template lab (dataset churn bank), bukan bagian solusi
-└── src/                          # sisa scaffolding `uv init`, tidak dipakai API
+│   ├── preprocessor.joblib
+│   ├── model_a_xgb.json
+│   ├── model_b_ann.onnx
+│   └── ensemble_config.json
+├── Dockerfile
+├── requirements.txt
+├── pyproject.toml
+├── uv.lock
+├── .python-version
+└── Imbalanced_Classification_&_NN.ipynb
 ```
 
 Dataset `sepsis_emr_data.csv` tidak disertakan di repository. Notebook membacanya dari `/content/sepsis_emr_data.csv`.
