@@ -31,7 +31,7 @@ Notebook disusun mengikuti tahapan CRISP-DM. Notebook dijalankan di Google Colab
 
 - **Duplikat.** Dari 1753 baris, hanya 100 kombinasi nilai fitur yang unik. 1653 baris lainnya adalah salinan yang hanya berbeda di `patient_id`. Duplikat ini dihapus, karena kalau dibiarkan, pasien yang identik bisa masuk ke train fold dan test fold sekaligus. Sebelum duplikat dihapus, XGBoost mendapat skor 1.0 di semua metrik, yang berasal dari kebocoran ini, bukan dari kemampuan model. Data akhir: 100 baris (58 tidak sepsis, 42 sepsis).
 - **Fitur.** Ketujuh fitur klinis dipakai semua. `patient_id` dibuang karena hanya identitas.
-- **Missing value.** `lactate_level` kosong di 141 dari 1753 baris (data sebelum hapus duplikat). Diisi dengan **median**, karena median tidak mudah terpengaruh nilai ekstrem.
+- **Missing value.** `lactate_level` kosong di 141 dari 1753 baris (data sebelum hapus duplikat). Diisi dengan **median**. Distribusi laktat condong ke kanan: pada data awal rata-ratanya 2.50 sedangkan mediannya 2.1, dengan nilai tertinggi 5.3. Nilai laktat tinggi berasal dari pasien sepsis dan tidak dibuang (lihat Outlier), sehingga rata-rata ikut tertarik naik. Median tidak terpengaruh nilai-nilai itu, jadi data yang kosong tidak diisi dengan nilai yang condong ke arah sepsis. Median dihitung dari training fold saja.
 - **Tanpa missing indicator.** Semua pasien yang laktatnya kosong ternyata tidak sepsis (uji chi-square, p ≈ 1.5e-25). Kalau diberi kolom penanda, model akan belajar bahwa "laktat kosong berarti aman". Di UGD hal ini berbahaya, karena laktat bisa kosong hanya karena hasil lab belum keluar.
 - **Outlier.** Tidak dibuang. Semua nilai masih masuk akal secara medis, dan nilai ekstrem (misalnya heart rate tinggi) justru merupakan tanda klinis sepsis.
 - **Scaling.** `StandardScaler`. Diperlukan untuk ANN. XGBoost tidak terpengaruh skala, tetapi kedua model memakai input yang sama supaya preprocessing di API cukup satu jalur.
@@ -150,6 +150,8 @@ Respons berisi dua field:
 ## Pilihan Desain dan Asumsi
 
 - **ANN disimpan dalam format ONNX** dan dijalankan dengan `onnxruntime`. API tidak membutuhkan TensorFlow sama sekali, sehingga image Docker jauh lebih kecil.
+- **Alasan memilih ONNX Runtime.** ONNX adalah format model terbuka yang tidak terikat satu framework. Model dari Keras, PyTorch, dan scikit-learn bisa diekspor ke ONNX, lalu dijalankan dengan ONNX Runtime di berbagai platform (server, desktop, Android, iOS, browser) dan hardware (CPU, GPU). Dengan begitu model tidak terkunci di Keras. Pada proyek ini API hanya berjalan di CPU di dalam Docker.
+- **uv sebagai package manager** untuk menjalankan proyek di lokal. uv ditulis dengan Rust dan jauh lebih cepat daripada pip dalam memasang dependency. `uv.lock` mengunci versi seluruh dependency sehingga environment bisa direproduksi. `uv run` menjalankan perintah di dalam environment proyek tanpa perlu mengaktifkan virtualenv. Dockerfile tetap memakai pip dengan `requirements.txt`.
 - **XGBoost disimpan dengan `save_model` (JSON)**, format bawaan XGBoost yang lebih aman dipindah antarversi dibanding pickle.
 - **Preprocessor disimpan sebagai satu file** (`Pipeline` imputer + scaler) dengan `joblib`, sehingga API cukup memanggil `transform`.
 - **Konfigurasi ensemble terpisah** di `ensemble_config.json` (urutan fitur, bobot, threshold). Jika model dilatih ulang dan bobot berubah, kode API tidak perlu diubah.
